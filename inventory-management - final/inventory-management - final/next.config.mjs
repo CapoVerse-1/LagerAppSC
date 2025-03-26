@@ -3,6 +3,10 @@ const nextConfig = {
   // Core configurations
   reactStrictMode: false,
   swcMinify: true,
+  distDir: '.next',
+  
+  // Output options
+  output: 'standalone',
 
   // Disable certain checks during build
   eslint: {

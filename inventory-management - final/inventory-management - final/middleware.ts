@@ -41,40 +41,64 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Check if the user is authenticated
-  const { data: { session } } = await supabase.auth.getSession();
-  console.log('Session in middleware:', session ? 'Exists' : 'None');
-  
-  if (session) {
-    console.log('User ID in middleware:', session.user.id);
-    console.log('Session expires at:', new Date(session.expires_at * 1000).toISOString());
+  try {
+    // Check if the user is authenticated
+    const { data: { session } } = await supabase.auth.getSession();
+    console.log('Session in middleware:', session ? 'Exists' : 'None');
+    
+    if (session) {
+      console.log('User ID in middleware:', session.user.id);
+      console.log('Session expires at:', new Date(session.expires_at * 1000).toISOString());
+    }
+
+    // Define public routes that don't require authentication
+    const publicRoutes = ['/login', '/auth-test', '/auth-test/signup'];
+    const isPublicRoute = publicRoutes.some(route => 
+      request.nextUrl.pathname.startsWith(route)
+    );
+    
+    // Special handling for root path
+    const isRootPath = request.nextUrl.pathname === '/';
+    
+    console.log('Is public route:', isPublicRoute);
+
+    // If the user is not authenticated and trying to access a protected route
+    if (!session && !isPublicRoute && !isRootPath) {
+      console.log('Redirecting to login - no session and protected route');
+      // Redirect to the login page
+      const redirectUrl = new URL('/login', request.url);
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    // If at root path and not logged in, redirect to login
+    if (isRootPath && !session) {
+      console.log('Root path accessed without session, redirecting to login');
+      const redirectUrl = new URL('/login', request.url);
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    // If at root path and logged in, redirect to inventory
+    if (isRootPath && session) {
+      console.log('Root path accessed with session, redirecting to inventory');
+      const redirectUrl = new URL('/inventory', request.url);
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    // If the user is authenticated and trying to access the login page
+    if (session && request.nextUrl.pathname.startsWith('/login')) {
+      console.log('Redirecting to inventory - has session and on login page');
+      // Redirect to the inventory page
+      const redirectUrl = new URL('/inventory', request.url);
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    console.log('Proceeding with request');
+    return response;
+  } catch (error) {
+    console.error('Error in middleware:', error);
+    // In case of error, proceed with the request rather than blocking it
+    return response;
   }
-
-  // Define public routes that don't require authentication
-  const publicRoutes = ['/login', '/auth-test', '/auth-test/signup'];
-  const isPublicRoute = publicRoutes.some(route => 
-    request.nextUrl.pathname.startsWith(route)
-  );
-  console.log('Is public route:', isPublicRoute);
-
-  // If the user is not authenticated and trying to access a protected route
-  if (!session && !isPublicRoute) {
-    console.log('Redirecting to login - no session and protected route');
-    // Redirect to the login page
-    const redirectUrl = new URL('/login', request.url);
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  // If the user is authenticated and trying to access the login page
-  if (session && request.nextUrl.pathname.startsWith('/login')) {
-    console.log('Redirecting to inventory - has session and on login page');
-    // Redirect to the inventory page
-    const redirectUrl = new URL('/inventory', request.url);
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  console.log('Proceeding with request');
-  return response;
 }
 
 // Specify which routes this middleware should run on

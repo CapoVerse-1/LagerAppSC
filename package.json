@@ -1,0 +1,13 @@
+{
+  "name": "inventory-management-root",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "inventory-management - final/inventory-management - final"
+  ],
+  "scripts": {
+    "dev": "cd \"inventory-management - final/inventory-management - final\" && npm run dev",
+    "build": "cd \"inventory-management - final/inventory-management - final\" && npm run build",
+    "start": "cd \"inventory-management - final/inventory-management - final\" && npm run start"
+  }
+} 
