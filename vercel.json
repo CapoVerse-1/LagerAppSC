@@ -1,8 +1,7 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "cd \"inventory-management - final/inventory-management - final\" && npm install && npm run build",
   "framework": "nextjs",
-  "installCommand": "npm install",
-  "outputDirectory": ".next",
+  "outputDirectory": "inventory-management - final/inventory-management - final/.next",
   "redirects": [
     { "source": "/", "destination": "/login", "permanent": false }
   ]

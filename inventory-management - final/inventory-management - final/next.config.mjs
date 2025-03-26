@@ -2,7 +2,6 @@
 const nextConfig = {
   // Core configurations
   reactStrictMode: false,
-  swcMinify: true,
   distDir: '.next',
   
   // Output options
@@ -21,20 +20,12 @@ const nextConfig = {
     unoptimized: true,
   },
 
-  // Turbo optimizations
-  turbo: {
-    enabled: true,
-    fastRefresh: true,
-    persistent: true,
-    memoryLimit: 4096,
-  },
-
   // Experimental features (keeping only essential ones)
   experimental: {
     webpackBuildWorker: true,
     parallelServerBuildTraces: true,
     parallelServerCompiles: true,
-    optimizeCss: true,
+    optimizeCss: false, // Disabled to avoid critters dependency
   },
 }
 
