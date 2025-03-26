@@ -54,4 +54,42 @@ if (npmBuild.status !== 0) {
   process.exit(1);
 }
 
+// Copy the build output to the root directory for Vercel to find it
+console.log('Copying build output to root directory...');
+const rootDir = path.resolve(__dirname);
+const buildDir = path.join(projectDir, '.next');
+const destDir = path.join(rootDir, '.next');
+
+// Create the destination directory if it doesn't exist
+if (!fs.existsSync(destDir)) {
+  fs.mkdirSync(destDir, { recursive: true });
+}
+
+// Function to copy directory recursively
+function copyDirRecursive(src, dest) {
+  const entries = fs.readdirSync(src, { withFileTypes: true });
+  
+  entries.forEach(entry => {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    
+    if (entry.isDirectory()) {
+      if (!fs.existsSync(destPath)) {
+        fs.mkdirSync(destPath, { recursive: true });
+      }
+      copyDirRecursive(srcPath, destPath);
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  });
+}
+
+try {
+  copyDirRecursive(buildDir, destDir);
+  console.log('Build output copied successfully');
+} catch (error) {
+  console.error('Error copying build output:', error);
+  process.exit(1);
+}
+
 console.log('Build completed successfully!'); 
