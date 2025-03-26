@@ -12,36 +12,45 @@ export async function middleware(request: NextRequest) {
     },
   });
   
-  // Create a Supabase client configured to use cookies
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value;
-        },
-        set(name: string, value: string, options: any) {
-          // This is used for setting cookies during redirects
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          });
-        },
-        remove(name: string, options: any) {
-          // This is used for removing cookies during redirects
-          response.cookies.set({
-            name,
-            value: '',
-            ...options,
-          });
-        },
-      },
-    }
-  );
-
   try {
+    // Check if Supabase credentials are available
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseKey) {
+      console.log('Supabase credentials missing, skipping auth check');
+      return response;
+    }
+    
+    // Create a Supabase client configured to use cookies
+    const supabase = createServerClient(
+      supabaseUrl,
+      supabaseKey,
+      {
+        cookies: {
+          get(name: string) {
+            return request.cookies.get(name)?.value;
+          },
+          set(name: string, value: string, options: any) {
+            // This is used for setting cookies during redirects
+            response.cookies.set({
+              name,
+              value,
+              ...options,
+            });
+          },
+          remove(name: string, options: any) {
+            // This is used for removing cookies during redirects
+            response.cookies.set({
+              name,
+              value: '',
+              ...options,
+            });
+          },
+        },
+      }
+    );
+
     // Check if the user is authenticated
     const { data: { session } } = await supabase.auth.getSession();
     console.log('Session in middleware:', session ? 'Exists' : 'None');
@@ -91,14 +100,13 @@ export async function middleware(request: NextRequest) {
       const redirectUrl = new URL('/inventory', request.url);
       return NextResponse.redirect(redirectUrl);
     }
-
-    console.log('Proceeding with request');
-    return response;
   } catch (error) {
     console.error('Error in middleware:', error);
     // In case of error, proceed with the request rather than blocking it
-    return response;
   }
+  
+  console.log('Proceeding with request');
+  return response;
 }
 
 // Specify which routes this middleware should run on
