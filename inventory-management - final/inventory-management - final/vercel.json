@@ -7,7 +7,5 @@
     "deploymentEnabled": {
       "main": true
     }
-  },
-  "installCommand": "npm install",
-  "rootDirectory": "inventory-management - final/inventory-management - final"
+  }
 } 

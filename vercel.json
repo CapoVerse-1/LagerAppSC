@@ -2,11 +2,8 @@
   "buildCommand": "npm run build",
   "framework": "nextjs",
   "installCommand": "npm install",
-  "outputDirectory": "inventory-management - final/inventory-management - final/.next",
+  "outputDirectory": ".next",
   "redirects": [
     { "source": "/", "destination": "/login", "permanent": false }
-  ],
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/inventory-management - final/inventory-management - final/$1" }
   ]
 } 
