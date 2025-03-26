@@ -57,8 +57,8 @@ if (npmBuild.status !== 0) {
 // Copy the build output to the root directory for Vercel to find it
 console.log('Copying build output to root directory...');
 const rootDir = path.resolve(__dirname);
-const buildDir = path.join(projectDir, '.next');
-const destDir = path.join(rootDir, '.next');
+const buildDir = path.join(projectDir, 'dist');
+const destDir = path.join(rootDir, 'dist');
 
 // Create the destination directory if it doesn't exist
 if (!fs.existsSync(destDir)) {

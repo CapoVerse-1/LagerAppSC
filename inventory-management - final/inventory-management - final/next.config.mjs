@@ -16,8 +16,11 @@ const nextConfig = {
     unoptimized: true,
   },
   
-  // Set build output for production
-  output: 'standalone',
+  // Set build output for export - safer for Vercel's serverless functions
+  output: 'export',
+  
+  // Disable features that require server-side rendering when using export
+  distDir: 'dist',
   
   // Simplify the build process
   poweredByHeader: false,
