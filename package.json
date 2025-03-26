@@ -8,7 +8,6 @@
   "scripts": {
     "dev": "cd \"inventory-management - final/inventory-management - final\" && npm run dev",
     "build": "cd \"inventory-management - final/inventory-management - final\" && npm run build",
-    "start": "cd \"inventory-management - final/inventory-management - final\" && npm run start",
-    "install-deps": "cd \"inventory-management - final/inventory-management - final\" && npm install"
+    "start": "cd \"inventory-management - final/inventory-management - final\" && npm run start"
   }
 } 
