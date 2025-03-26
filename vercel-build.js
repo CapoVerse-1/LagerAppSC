@@ -24,6 +24,20 @@ if (!fs.existsSync(projectDir)) {
 console.log(`Changing to directory: ${projectDir}`);
 process.chdir(projectDir);
 
+// Copy .env.production to .env.local to ensure environment variables are available
+console.log('Copying .env.production to .env.local...');
+if (fs.existsSync(path.join(projectDir, '.env.production'))) {
+  try {
+    fs.copyFileSync(
+      path.join(projectDir, '.env.production'),
+      path.join(projectDir, '.env.local')
+    );
+    console.log('Environment file copied successfully');
+  } catch (error) {
+    console.error('Error copying environment file:', error);
+  }
+}
+
 // Install dependencies
 console.log('Installing dependencies...');
 const npmInstall = spawnSync('npm', ['install'], { stdio: 'inherit' });

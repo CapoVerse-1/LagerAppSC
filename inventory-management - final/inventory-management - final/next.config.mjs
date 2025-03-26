@@ -16,19 +16,12 @@ const nextConfig = {
     unoptimized: true,
   },
   
-  // Avoid pre-rendering pages that need Supabase
-  experimental: {
-    missingSuspenseWithCSRBailout: false
-  },
+  // Set build output for production - prevents static generation of pages requiring dynamic data
+  output: 'standalone',
   
-  // Configure which pages should not be pre-rendered
-  exportPathMap: async function () {
-    return {
-      '/': { page: '/' },
-      '/login': { page: '/login' },
-      // Exclude auth-test pages from static generation
-    };
-  },
+  // Skip pre-rendering for auth-related pages
+  skipTrailingSlashRedirect: true,
+  skipMiddlewareUrlNormalize: true
 }
 
 export default nextConfig
