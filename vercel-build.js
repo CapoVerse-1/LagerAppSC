@@ -4,12 +4,19 @@ const path = require('path');
 
 console.log('Starting Vercel build script...');
 
-// Get the project root directory - the directory with nested Next.js app
-const projectDir = path.join(__dirname, 'inventory-management - final', 'inventory-management - final');
+// Get the project root directory - using path.resolve to handle spaces properly
+const projectDir = path.resolve(__dirname, 'inventory-management - final', 'inventory-management - final');
+console.log('Project directory path:', projectDir);
 
 // Check if the directory exists
 if (!fs.existsSync(projectDir)) {
   console.error(`Error: Directory ${projectDir} does not exist!`);
+  // List directories to debug
+  console.log('Contents of current directory:', fs.readdirSync(__dirname));
+  if (fs.existsSync(path.resolve(__dirname, 'inventory-management - final'))) {
+    console.log('Contents of first level directory:', 
+      fs.readdirSync(path.resolve(__dirname, 'inventory-management - final')));
+  }
   process.exit(1);
 }
 

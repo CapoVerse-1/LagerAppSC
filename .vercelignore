@@ -12,3 +12,5 @@ node_modules
 !vercel-build.js
 !package.json
 !vercel.json 
+
+.vercel/ 

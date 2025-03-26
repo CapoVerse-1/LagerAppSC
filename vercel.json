@@ -1,6 +1,5 @@
 {
-  "buildCommand": "cd \"inventory-management - final/inventory-management - final\" && npm install && npm run build",
+  "buildCommand": "node vercel-build.js",
   "outputDirectory": "inventory-management - final/inventory-management - final/.next",
-  "framework": "nextjs",
-  "installCommand": "cd \"inventory-management - final/inventory-management - final\" && npm install"
+  "framework": "nextjs"
 } 
