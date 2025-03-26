@@ -7,7 +7,13 @@
   ],
   "scripts": {
     "dev": "cd \"inventory-management - final/inventory-management - final\" && npm run dev",
-    "build": "cd \"inventory-management - final/inventory-management - final\" && npm run build",
+    "build": "node build.js",
+    "vercel-build": "node build.js",
     "start": "cd \"inventory-management - final/inventory-management - final\" && npm run start"
+  },
+  "dependencies": {
+    "next": "^15.2.2",
+    "react": "^18",
+    "react-dom": "^18"
   }
 } 
