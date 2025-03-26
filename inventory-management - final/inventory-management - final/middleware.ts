@@ -2,15 +2,6 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
-// Safely get environment variables with fallbacks for build time
-const getSupabaseUrl = () => {
-  return process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://fallback-url-for-build.supabase.co';
-};
-
-const getSupabaseAnonKey = () => {
-  return process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'fallback-key-for-build-time-only';
-};
-
 export async function middleware(request: NextRequest) {
   console.log('Middleware running for path:', request.nextUrl.pathname);
   
@@ -21,47 +12,36 @@ export async function middleware(request: NextRequest) {
     },
   });
   
-  try {
-    // Check if environment variables are available
-    const supabaseUrl = getSupabaseUrl();
-    const supabaseKey = getSupabaseAnonKey();
-    
-    // Skip auth check during build if using fallback values
-    if (supabaseUrl.includes('fallback-url-for-build') || 
-        supabaseKey.includes('fallback-key-for-build-time')) {
-      console.log('Using fallback Supabase credentials, skipping auth check');
-      return response;
-    }
-    
-    // Create a Supabase client configured to use cookies
-    const supabase = createServerClient(
-      supabaseUrl,
-      supabaseKey,
-      {
-        cookies: {
-          get(name: string) {
-            return request.cookies.get(name)?.value;
-          },
-          set(name: string, value: string, options: any) {
-            // This is used for setting cookies during redirects
-            response.cookies.set({
-              name,
-              value,
-              ...options,
-            });
-          },
-          remove(name: string, options: any) {
-            // This is used for removing cookies during redirects
-            response.cookies.set({
-              name,
-              value: '',
-              ...options,
-            });
-          },
+  // Create a Supabase client configured to use cookies
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return request.cookies.get(name)?.value;
         },
-      }
-    );
+        set(name: string, value: string, options: any) {
+          // This is used for setting cookies during redirects
+          response.cookies.set({
+            name,
+            value,
+            ...options,
+          });
+        },
+        remove(name: string, options: any) {
+          // This is used for removing cookies during redirects
+          response.cookies.set({
+            name,
+            value: '',
+            ...options,
+          });
+        },
+      },
+    }
+  );
 
+  try {
     // Check if the user is authenticated
     const { data: { session } } = await supabase.auth.getSession();
     console.log('Session in middleware:', session ? 'Exists' : 'None');
