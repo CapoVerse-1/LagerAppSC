@@ -7,8 +7,8 @@
   ],
   "scripts": {
     "dev": "cd \"inventory-management - final/inventory-management - final\" && npm run dev",
-    "build": "node build.js",
-    "vercel-build": "node build.js",
+    "build": "node vercel-build.js",
+    "vercel-build": "node vercel-build.js",
     "start": "cd \"inventory-management - final/inventory-management - final\" && npm run start"
   },
   "dependencies": {

@@ -1,3 +1,6 @@
 {
-  "version": 2
+  "buildCommand": "cd \"inventory-management - final/inventory-management - final\" && npm install && npm run build",
+  "outputDirectory": "inventory-management - final/inventory-management - final/.next",
+  "framework": "nextjs",
+  "installCommand": "cd \"inventory-management - final/inventory-management - final\" && npm install"
 } 

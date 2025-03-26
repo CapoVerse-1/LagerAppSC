@@ -2,3 +2,13 @@
 !/inventory-management - final/
 /inventory-management - final/*
 !/inventory-management - final/inventory-management - final/ 
+
+# Basic ignores
+.git
+.github
+node_modules
+
+# Keep scripts
+!vercel-build.js
+!package.json
+!vercel.json 
