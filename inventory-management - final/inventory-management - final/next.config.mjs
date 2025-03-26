@@ -16,15 +16,20 @@ const nextConfig = {
     unoptimized: true,
   },
   
-  // Set build output for export - safer for Vercel's serverless functions
-  output: 'export',
+  // Use standalone output for better deployment compatibility with APIs
+  output: 'standalone',
   
-  // Disable features that require server-side rendering when using export
+  // Set a clean build directory without spaces
   distDir: 'dist',
   
   // Simplify the build process
   poweredByHeader: false,
-  generateEtags: false
+  generateEtags: false,
+  
+  // Properly handle function names with spaces
+  experimental: {
+    serverComponentsExternalPackages: ['@supabase/ssr']
+  }
 }
 
 export default nextConfig

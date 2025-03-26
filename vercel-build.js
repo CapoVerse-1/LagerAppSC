@@ -20,23 +20,68 @@ if (!fs.existsSync(projectDir)) {
   process.exit(1);
 }
 
-// Change to the project directory
-console.log(`Changing to directory: ${projectDir}`);
-process.chdir(projectDir);
+// Create a temporary build directory without spaces
+const rootDir = path.resolve(__dirname);
+const tempBuildDir = path.join(rootDir, 'tempbuild');
 
-// Copy .env.production to .env.local to ensure environment variables are available
+// Create the temp build directory if it doesn't exist
+if (fs.existsSync(tempBuildDir)) {
+  console.log('Removing existing temp build directory...');
+  fs.rmSync(tempBuildDir, { recursive: true, force: true });
+}
+
+console.log('Creating temp build directory...');
+fs.mkdirSync(tempBuildDir, { recursive: true });
+
+// Function to copy directory recursively, but skipping node_modules and .git
+function copyProjectFiles(src, dest) {
+  console.log(`Copying from ${src} to ${dest}`);
+  
+  // Create the destination directory if it doesn't exist
+  if (!fs.existsSync(dest)) {
+    fs.mkdirSync(dest, { recursive: true });
+  }
+  
+  const entries = fs.readdirSync(src, { withFileTypes: true });
+  
+  entries.forEach(entry => {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    
+    // Skip node_modules and .git directories
+    if (entry.isDirectory() && (entry.name === 'node_modules' || entry.name === '.git' || entry.name === 'dist')) {
+      return;
+    }
+    
+    if (entry.isDirectory()) {
+      copyProjectFiles(srcPath, destPath);
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  });
+}
+
+// Copy project files to temp directory
+console.log('Copying project files to temp directory...');
+copyProjectFiles(projectDir, tempBuildDir);
+
+// Copy environment file
 console.log('Copying .env.production to .env.local...');
 if (fs.existsSync(path.join(projectDir, '.env.production'))) {
   try {
     fs.copyFileSync(
       path.join(projectDir, '.env.production'),
-      path.join(projectDir, '.env.local')
+      path.join(tempBuildDir, '.env.local')
     );
     console.log('Environment file copied successfully');
   } catch (error) {
     console.error('Error copying environment file:', error);
   }
 }
+
+// Change to the temp build directory
+console.log(`Changing to temp build directory: ${tempBuildDir}`);
+process.chdir(tempBuildDir);
 
 // Install dependencies
 console.log('Installing dependencies...');
@@ -54,10 +99,9 @@ if (npmBuild.status !== 0) {
   process.exit(1);
 }
 
-// Copy the build output to the root directory for Vercel to find it
+// Copy the build output back to the expected location
 console.log('Copying build output to root directory...');
-const rootDir = path.resolve(__dirname);
-const buildDir = path.join(projectDir, 'dist');
+const buildDir = path.join(tempBuildDir, 'dist');
 const destDir = path.join(rootDir, 'dist');
 
 // Create the destination directory if it doesn't exist
@@ -67,6 +111,16 @@ if (!fs.existsSync(destDir)) {
 
 // Function to copy directory recursively
 function copyDirRecursive(src, dest) {
+  if (!fs.existsSync(src)) {
+    console.error(`Source directory ${src} does not exist!`);
+    return;
+  }
+  
+  // Create the destination directory if it doesn't exist
+  if (!fs.existsSync(dest)) {
+    fs.mkdirSync(dest, { recursive: true });
+  }
+  
   const entries = fs.readdirSync(src, { withFileTypes: true });
   
   entries.forEach(entry => {
@@ -74,9 +128,6 @@ function copyDirRecursive(src, dest) {
     const destPath = path.join(dest, entry.name);
     
     if (entry.isDirectory()) {
-      if (!fs.existsSync(destPath)) {
-        fs.mkdirSync(destPath, { recursive: true });
-      }
       copyDirRecursive(srcPath, destPath);
     } else {
       fs.copyFileSync(srcPath, destPath);
