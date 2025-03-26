@@ -20,9 +20,9 @@ if (!fs.existsSync(projectDir)) {
   process.exit(1);
 }
 
-// Create a temporary build directory without spaces
+// Create a clean temporary build directory without spaces - using a flat structure
 const rootDir = path.resolve(__dirname);
-const tempBuildDir = path.join(rootDir, 'tempbuild');
+const tempBuildDir = path.join(rootDir, 'app');
 
 // Create the temp build directory if it doesn't exist
 if (fs.existsSync(tempBuildDir)) {

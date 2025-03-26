@@ -26,10 +26,8 @@ const nextConfig = {
   poweredByHeader: false,
   generateEtags: false,
   
-  // Properly handle function names with spaces
-  experimental: {
-    serverComponentsExternalPackages: ['@supabase/ssr']
-  }
+  // Properly handle external packages - updated property name
+  serverExternalPackages: ['@supabase/ssr']
 }
 
 export default nextConfig

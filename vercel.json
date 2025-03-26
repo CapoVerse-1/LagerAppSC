@@ -1,5 +1,8 @@
 {
   "buildCommand": "node vercel-build.js",
   "outputDirectory": "dist",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "regions": ["iad1"]
 } 
