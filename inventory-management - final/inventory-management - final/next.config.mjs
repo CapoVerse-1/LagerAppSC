@@ -2,7 +2,6 @@
 const nextConfig = {
   // Core configurations
   reactStrictMode: false,
-  swcMinify: true,
   
   // Disable certain checks during build
   eslint: {
@@ -17,15 +16,9 @@ const nextConfig = {
     unoptimized: true,
   },
 
-  // Turbo optimizations
-  turbo: {
-    enabled: true,
-    fastRefresh: true,
-  },
-
-  // Experimental features (keeping only essential ones)
+  // Experimental features - removed due to critters dependency issue
   experimental: {
-    optimizeCss: true,
+    // optimizeCss is removed as it requires critters package
   },
 }
 
